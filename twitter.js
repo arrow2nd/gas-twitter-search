@@ -19,7 +19,7 @@ function getSearchTweets(token, query, sinceID) {
     };
 
     var res = UrlFetchApp.fetch(
-        'https://api.twitter.com/1.1/search/tweets.json?q=' + query + '&count=50&result_type=recent',
+        'https://api.twitter.com/1.1/search/tweets.json?q=' + query + '&count=103&result_type=recent',
         { 'headers': bearerAuthHeader }
     );
 
