@@ -25,5 +25,9 @@ function getSinceID() {
 * @param {Array} sinceID since_id
 */
 function setSinceID(sinceID) {
-    ss.getRange(2, 2, endRow, 1).setValues(sinceID);
+    const docLock = LockService.getDocumentLock();
+    if (docLock.tryLock(500)) {
+        ss.getRange(2, 2, endRow, 1).setValues(sinceID);
+        docLock.releaseLock();
+    }
 }

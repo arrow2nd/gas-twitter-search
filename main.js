@@ -1,9 +1,19 @@
 const config = PropertiesService.getScriptProperties().getProperties();
 
-/**
-* メイン
-*/
+// メイン
 function main() {
+    const lock = LockService.getScriptLock();
+    // ロック
+    if (lock.tryLock(500)) {
+        exec();
+        lock.releaseLock();
+    } else {
+        console.log("既にスクリプトが実行されています")
+    }
+}
+
+// 処理
+function exec() {
     const searchWords = getSearchWords();
     let sinceIDs = getSinceID();
     let tweets;
@@ -25,6 +35,11 @@ function main() {
         // blockに検索結果を追加
         blocks = addResultBlock(word, tweets, blocks);
     });
+
+    // 検索結果がない場合処理を中断
+    if (blocks.length <= 0) {
+        return;
+    }
 
     // slackに飛ばす
     const payload = {
