@@ -4,7 +4,7 @@ const config = PropertiesService.getScriptProperties().getProperties();
 function main() {
     const lock = LockService.getScriptLock();
     // ロック
-    if (lock.tryLock(500)) {
+    if (lock.tryLock(3000)) {
         exec();
         lock.releaseLock();
     } else {
@@ -45,11 +45,11 @@ function exec() {
     const payload = {
         "text": "新しいツイートがみつかりました🐣",
         "blocks": blocks
-    };
+    }
     sendMessage(config.slackWebhook, payload);
 
     // since_idをスプレッドシートに保存
     setSinceID(sinceIDs);
 
-    console.log('success!')
+    console.log('success!');
 }
