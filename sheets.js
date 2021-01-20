@@ -1,4 +1,4 @@
-const ss = SpreadsheetApp.openById(config.sheetID).getActiveSheet();
+const ss = SpreadsheetApp.getActiveSheet();
 const endRow = ss.getLastRow() - 1;
 
 /**

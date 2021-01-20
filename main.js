@@ -8,7 +8,7 @@ function main() {
         exec();
         lock.releaseLock();
     } else {
-        console.log("既にスクリプトが実行されています")
+        console.log("既にスクリプトが実行されています");
     }
 }
 
@@ -20,12 +20,17 @@ function exec() {
     let blocks = [];
 
     searchWords.forEach((word, i) => {
-        // 検索結果取得
-        tweets = getSearchTweets(config.twitterToken, word, sinceIDs[i][0]).statuses;
+        try {
+            // 検索結果取得
+            tweets = getSearchTweets(config.twitterToken, word, sinceIDs[i][0]).statuses;
+        } catch (err) {
+            console.error(`[Error] ${word}\n${err}`);
+            return;
+        }
 
-        // 無い場合return 
+        // 検索結果が0件ならスキップ
         if (tweets.length <= 0) {
-            console.log(word + ': NotFound');
+            console.log(`[NotFound] ${word}`);
             return;
         }
 
@@ -46,10 +51,16 @@ function exec() {
         "text": "新しいツイートがみつかりました🐣",
         "blocks": blocks
     }
-    sendMessage(config.slackWebhook, payload);
+
+    try {
+        sendMessage(config.slackWebhook, payload);
+    } catch (err) {
+        console.error(err);
+        throw new error('Slackへの送信に失敗しました');
+    }
 
     // since_idをスプレッドシートに保存
     setSinceID(sinceIDs);
 
-    console.log('success!');
+    console.log('Success');
 }
